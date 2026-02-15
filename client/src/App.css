@@ -1,0 +1,66 @@
+body{
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+h4{
+    font-weight: 300;
+}
+
+p{
+    font-weight: 200;
+}
+
+.auth-btn{
+    width: 32%;
+    transition: 0.25s all ease;
+    font-family:Arial, Helvetica, sans-serif;
+    box-shadow: 0 6px 14px rgba(0,0,0,0.15);
+}
+
+.auth-btn:hover{
+    transform: translateY(-3px);
+    box-shadow: 0 10px 22px rgba(0,0,0,0.22);
+}
+
+.auth-btn:active{
+    transform: translateY(1px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.18);
+}
+
+@media (max-width: 992px) {
+    .auth-btn {
+        width:15%;
+        padding: 6px 12px;
+        font-size: 13px;
+    }
+
+    h4{
+        font-weight: 550;
+    }
+
+    p{
+        font-weight: 100;
+    }
+}
+  
+@media (max-width: 576px) {
+  .auth-btn {
+    width: 20%;
+    padding: 5px 10px;
+    font-size: 12px;
+  }
+}
+
+.title-bar{
+    animation: titleAnimation 5s linear infinite;
+}
+
+@keyframes titleAnimation {
+    0%,100%{
+        background: #BFD0E0;
+    }
+
+    50%{
+        background: #C0C5CA;
+    }
+}
