@@ -1,34 +1,61 @@
 import "bootstrap/dist/css/bootstrap.min.css";
+import React, { useState } from "react";
+import Title from "./component/title";
 import './App.css';
 
 function App() {
 
-  const today = new Date();
+  const [keyword , setKeyword] = useState("");
 
-  const date = today.toLocaleDateString("en-GB" , {
-    day:"numeric",
-    month:"short",
-    year:"numeric"
-  });
+  function handleChange(event:React.ChangeEvent<HTMLInputElement>){
+    const value = event.target.value;
+    setKeyword(value);
+  }
+
+  function handleSubmit(){informationFetch()}
+
+  function handleKeydown(e:React.KeyboardEvent<HTMLInputElement>){
+    if(e.key === "Enter"){informationFetch()}
+  }
+
+  async function informationFetch(){
+    const result = await fetch("http://localhost:8000/news/fetch" ,{
+      method:"POST",
+      
+      headers:{
+        "Content-Type":"application/json"
+      },
+
+      body:JSON.stringify({message:keyword})
+    });
+    
+    const data = await result.json();
+    console.log(data);
+  }
 
   return (
-    <div className='container-fluid title-bar'>
-      <div className='row align-items-center text-center p-4'>
-        
-        <div className='col-xl-3 col-lg-4 '>
-          <p className='text-dark text-lg-start ms-4 p-0 m-0'>{date}</p>
-        </div>
+    <div>
 
-        <div className='col-xl-6 col-lg-4 '>
-          <h4 className='text-dark fs-1 align-self-start'>The Public Brief</h4>
-        </div>
+      <Title />
 
-        <div className='col-xl-3 col-lg-4 '>
-          <button className='btn btn-primary auth-btn'>Login</button>
-          <button className='btn btn-secondary ms-1 auth-btn '>Sign Up</button>
-        </div>
+      <div className="container my-4">
+        <div className="row ">
+          <div className="col-lg-6 offset-lg-3 col-9 offset-1 ">
+            <div className="row m-0 p-0 d-flex justify-content-center">
 
+              <div className="col-md-8 col-9">
+                <input placeholder="Enter a Keyword" className="form-control" onChange={handleChange} onKeyDown={handleKeydown}></input>
+              </div>
+
+              <div className="col-md-4 col-3">
+                <button className="btn btn-primary for-btn" onClick={handleSubmit} >Search</button>
+              </div>
+
+            </div> 
+          </div>
+        </div>
       </div>
+
     </div>
   )
 }
