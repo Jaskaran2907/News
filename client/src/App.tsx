@@ -1,11 +1,12 @@
 import "bootstrap/dist/css/bootstrap.min.css";
-import React, { useState } from "react";
+import React, { useEffect , useState } from "react";
 import Title from "./component/title";
 import './App.css';
 
 function App() {
 
-  const [keyword , setKeyword] = useState("");
+  const [keyword , setKeyword] = useState(null);
+  const [frontPageData , setFrontPageData] = useState(null)
 
   function handleChange(event:React.ChangeEvent<HTMLInputElement>){
     const value = event.target.value;
@@ -29,9 +30,29 @@ function App() {
       body:JSON.stringify({message:keyword})
     });
     
-    const data = await result.json();
-    console.log(data);
+    const specific_data = await result.json();
+    console.log(specific_data);
   }
+
+  useEffect(() =>{
+
+    async function loadFrontPage(){
+
+      const front_Page_raw_data = await fetch("http://localhost:8000/front_page/headlines");
+      const front_page_json_convertion = await front_Page_raw_data.json();
+      const front_page_data = front_page_json_convertion.data.articles;
+
+      setFrontPageData(front_page_data);
+    }
+
+    loadFrontPage()
+    
+  },[]);
+
+  useEffect(()=>{
+    console.log(frontPageData)
+  },[frontPageData]);
+
 
   return (
     <div>
