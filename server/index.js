@@ -28,7 +28,7 @@ app.get("/front_page/headlines" , async(req , res)=>{
             description:front_page_fetch_converted.articles[i].description,
             publishedAt:front_page_fetch_converted.articles[i].publishedAt,
             title:front_page_fetch_converted.articles[i].title,
-            source:front_page_fetch_converted.articles[i].source.name,
+            //source:front_page_fetch_converted.articles[i].source.name,
             image:front_page_fetch_converted.articles[i].urlToImage,
             url:front_page_fetch_converted.articles[i].url
         }

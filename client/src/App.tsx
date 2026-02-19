@@ -6,8 +6,17 @@ import './App.css';
 
 function App() {
 
+  interface NewsArticle {
+    title: string;
+    image: string;
+    author: string;
+    description: string;
+    source: string;
+    url: string;
+  }
+
   const [keyword , setKeyword] = useState("");
-  const [frontPageData , setFrontPageData] = useState([])
+  const [frontPageData , setFrontPageData] = useState<NewsArticle[]>([]);
 
   function handleChange(event:React.ChangeEvent<HTMLInputElement>){
     const value = event.target.value;
@@ -86,7 +95,7 @@ function App() {
         <div className="row justify-content-center">
           {frontPageData.map((items , index) => {
             return(
-              <FrontPageNews key={index} title={items.title} img={items.image} author={items.author} description={items.description} source={items.source} url={items.url}/>
+              <FrontPageNews key={index} title={items.title} img={items.image} author={items.author} description={items.description} url={items.url}/>
             )
           })}
         </div>
