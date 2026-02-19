@@ -4,8 +4,15 @@ import env from "dotenv";
 
 env.config();
 const app=express();
+const PORT = process.env.port || 8000;
 
-app.use(cors());
+app.use(cors({
+    origin: [
+      "http://localhost:5173",
+      "https://news-seven-wine.vercel.app"
+    ],
+    methods: ["GET", "POST"]
+}));
 app.use(express.json());
 
 app.post("/news/fetch", async(req , res)=>{
@@ -40,6 +47,6 @@ app.get("/front_page/headlines" , async(req , res)=>{
     res.json({data : required_front_page_data});
 
 })
-app.listen(8000, ()=>{
+app.listen(PORT, ()=>{
     console.log(`Server running on port 8000`);
 });
