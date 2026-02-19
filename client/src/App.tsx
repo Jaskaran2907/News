@@ -1,12 +1,13 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import React, { useEffect , useState } from "react";
 import Title from "./component/title";
+import FrontPageNews from "./component/frontPageNews";
 import './App.css';
 
 function App() {
 
-  const [keyword , setKeyword] = useState(null);
-  const [frontPageData , setFrontPageData] = useState(null)
+  const [keyword , setKeyword] = useState("");
+  const [frontPageData , setFrontPageData] = useState([])
 
   function handleChange(event:React.ChangeEvent<HTMLInputElement>){
     const value = event.target.value;
@@ -40,7 +41,7 @@ function App() {
 
       const front_Page_raw_data = await fetch("http://localhost:8000/front_page/headlines");
       const front_page_json_convertion = await front_Page_raw_data.json();
-      const front_page_data = front_page_json_convertion.data.articles;
+      const front_page_data = front_page_json_convertion.data;
 
       setFrontPageData(front_page_data);
     }
@@ -74,6 +75,20 @@ function App() {
 
             </div> 
           </div>
+        </div>
+      </div>
+
+
+      {/* front page loading */}
+
+
+      <div className="container-fluid ">
+        <div className="row justify-content-center">
+          {frontPageData.map((items , index) => {
+            return(
+              <FrontPageNews key={index} title={items.title} img={items.image} author={items.author} description={items.description} source={items.source} url={items.url}/>
+            )
+          })}
         </div>
       </div>
 

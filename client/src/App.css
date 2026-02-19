@@ -35,6 +35,13 @@ p{
     width:75%
 }
 
+img{
+    width:100%;
+}
+
+span{
+    font-size: 14px;
+}
 @media (max-width: 992px) {
     .auth-btn {
         width:30%;
@@ -53,6 +60,7 @@ p{
     .for-btn{
         width:90px;
     }
+
 }
   
 @media (max-width: 576px) {
@@ -77,3 +85,5 @@ p{
         background: #C0C5CA;
     }
 }
+
+
