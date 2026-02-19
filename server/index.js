@@ -17,7 +17,7 @@ app.use(express.json());
 
 app.post("/news/fetch", async(req , res)=>{
     const keyword = req.body.message;
-    const result = await fetch(`https://newsapi.org/v2/top-headlines?q=${keyword}&apiKey=${process.env.api_key}`);
+    const result = await fetch(`https://newsapi.org/v2/everything?q=${keyword}&apiKey=${process.env.api_key}`);
     const specific_news_fetch = await result.json();
     
     const required_specific_data = [];
