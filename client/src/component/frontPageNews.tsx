@@ -4,7 +4,7 @@ interface FrontPageNewsProps {
     author: string;
     description: string;
     url: string;
-  }
+}
 
 function FrontPageNews(props:FrontPageNewsProps){
     return(

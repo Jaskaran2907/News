@@ -17,15 +17,34 @@ app.use(express.json());
 
 app.post("/news/fetch", async(req , res)=>{
     const keyword = req.body.message;
-    const specific_news_fetch = await fetch(`https://newsapi.org/v2/top-headlines?q=${keyword}&apiKey=${process.env.api_key}`)
+    const result = await fetch(`https://newsapi.org/v2/top-headlines?q=${keyword}&apiKey=${process.env.api_key}`);
+    const specific_news_fetch = await result.json();
+    
+    const required_specific_data = [];
+
+    for(let i=0 ; i<specific_news_fetch.articles.length ; i++){
+
+        const cleaned_specific_data = {
+            author:specific_news_fetch.articles[i].author,
+            description:specific_news_fetch.articles[i].description,
+            publishedAt:specific_news_fetch.articles[i].publishedAt,
+            title:specific_news_fetch.articles[i].title,
+            //source:specific_news_fetch.articles[i].source.name,
+            image:specific_news_fetch.articles[i].urlToImage,
+            url:specific_news_fetch.articles[i].url
+        }
+
+        required_specific_data.push(cleaned_specific_data);
+
+    }
+
+    console.log(required_specific_data);
+    res.json({data : required_specific_data});
 });
 
 app.get("/front_page/headlines" , async(req , res)=>{
     const frontPageFetch = await fetch(`https://newsapi.org/v2/top-headlines?country=us&apiKey=${process.env.api_key}`);
     const front_page_fetch_converted  = await frontPageFetch.json();
-
-    console.log(front_page_fetch_converted)
-
     const required_front_page_data = [];
 
     for(let i=0 ; i<front_page_fetch_converted.articles.length ; i++){

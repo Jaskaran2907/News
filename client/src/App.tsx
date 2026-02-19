@@ -17,6 +17,9 @@ function App() {
 
   const [keyword , setKeyword] = useState("");
   const [frontPageData , setFrontPageData] = useState<NewsArticle[]>([]);
+  const [specificData , setSpecificData] = useState<NewsArticle[]>([]);
+
+  const dataToRender = specificData.length>0 ? specificData : frontPageData;
 
   function handleChange(event:React.ChangeEvent<HTMLInputElement>){
     const value = event.target.value;
@@ -41,7 +44,7 @@ function App() {
     });
     
     const specific_data = await result.json();
-    console.log(specific_data);
+    setSpecificData(specific_data.data);
   }
 
   useEffect(() =>{
@@ -58,6 +61,10 @@ function App() {
     loadFrontPage()
     
   },[]);
+
+  useEffect(()=>{
+    console.log(specificData)
+  },[specificData]);
 
   useEffect(()=>{
     console.log(frontPageData)
@@ -81,7 +88,6 @@ function App() {
               <div className="col-md-4 col-3">
                 <button className="btn btn-primary for-btn" onClick={handleSubmit} >Search</button>
               </div>
-
             </div> 
           </div>
         </div>
@@ -93,7 +99,7 @@ function App() {
 
       <div className="container-fluid ">
         <div className="row justify-content-center">
-          {frontPageData.map((items , index) => {
+          {dataToRender.map((items , index) => {
             return(
               <FrontPageNews key={index} title={items.title} img={items.image} author={items.author} description={items.description} url={items.url}/>
             )
