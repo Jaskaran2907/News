@@ -33,7 +33,7 @@ function App() {
   }
 
   async function informationFetch(){
-    const result = await fetch("http://localhost:8000/news/fetch" ,{
+    const result = await fetch("https://news-p9sh.onrender.com/news/fetch" ,{
       method:"POST",
       
       headers:{
@@ -51,7 +51,7 @@ function App() {
 
     async function loadFrontPage(){
 
-      const front_Page_raw_data = await fetch("http://localhost:8000/front_page/headlines");
+      const front_Page_raw_data = await fetch("https://news-p9sh.onrender.com/front_page/headlines");
       const front_page_json_convertion = await front_Page_raw_data.json();
       const front_page_data = front_page_json_convertion.data;
 
