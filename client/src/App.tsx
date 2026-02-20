@@ -23,6 +23,12 @@ function App() {
   const [country , setCountry] = useState<string>("");
   const [language , setLanguage] = useState<string>("");
 
+  useEffect(()=>{
+    console.log(Category);
+    console.log(country);
+    console.log(language);
+  })
+
   const dataToRender = specificData.length>0 ? specificData : frontPageData;
 
   function handleChange(event:React.ChangeEvent<HTMLInputElement>){

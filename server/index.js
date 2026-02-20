@@ -6,6 +6,8 @@ env.config();
 const app=express();
 const PORT = process.env.port || 8000;
 
+console.log("Hello")
+
 app.use(cors({
     origin: [
       "http://localhost:5173",
