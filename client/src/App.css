@@ -20,6 +20,14 @@ p{
     padding: 7px 14px;
 }
 
+.articles_component{
+    transition: 0.25s all ease;
+}
+
+.articles_component:hover , .articles_component:active{
+    transform: translateY(-16px);
+}
+
 .auth-btn:hover{
     transform: translateY(-3px);
     box-shadow: 0 10px 22px rgba(0,0,0,0.22);

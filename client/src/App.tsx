@@ -48,7 +48,6 @@ function App() {
   }
 
   useEffect(() =>{
-
     async function loadFrontPage(){
 
       const front_Page_raw_data = await fetch("https://news-p9sh.onrender.com/front_page/headlines");
@@ -57,19 +56,8 @@ function App() {
 
       setFrontPageData(front_page_data);
     }
-
     loadFrontPage()
-    
   },[]);
-
-  useEffect(()=>{
-    console.log(specificData)
-  },[specificData]);
-
-  useEffect(()=>{
-    console.log(frontPageData)
-  },[frontPageData]);
-
 
   return (
     <div>
