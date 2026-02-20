@@ -18,23 +18,13 @@ p{
     white-space: nowrap;
     font-size: 15px;
     padding: 7px 14px;
+
+    transition: 0.1s all ease;
 }
 
-.articles_component{
-    transition: 0.25s all ease;
-}
-
-.articles_component:hover , .articles_component:active{
-    transform: translateY(-16px);
-}
-
-.auth-btn:hover{
-    transform: translateY(-3px);
-    box-shadow: 0 10px 22px rgba(0,0,0,0.22);
-}
 
 .auth-btn:active{
-    transform: translateY(1px);
+    transform: translateY(5px);
     box-shadow: 0 4px 10px rgba(0,0,0,0.18);
 }
 
@@ -50,6 +40,11 @@ img{
 span{
     font-size: 14px;
 }
+
+.btn-dropdown{
+    height:75%;
+}
+
 @media (max-width: 992px) {
     .auth-btn {
         width:30%;
@@ -69,6 +64,13 @@ span{
         width:90px;
     }
 
+}
+
+@media (max-width:768px){
+    .btn-dropdown{
+        height:100%;
+        margin-left: 8%;
+    }
 }
   
 @media (max-width: 576px) {
