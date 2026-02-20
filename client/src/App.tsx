@@ -14,6 +14,7 @@ function App() {
     description: string;
     source: string;
     url: string;
+    publishedAt:string;
   }
 
   const [keyword , setKeyword] = useState("");
@@ -27,7 +28,7 @@ function App() {
     console.log(Category);
     console.log(country);
     console.log(language);
-  })
+  });
 
   const dataToRender = specificData.length>0 ? specificData : frontPageData;
 
@@ -43,7 +44,7 @@ function App() {
   }
 
   async function informationFetch(){
-    const result = await fetch("https://news-p9sh.onrender.com/news/fetch" ,{
+    const result = await fetch("http://localhost:8000/news/fetch" ,{
       method:"POST",
       
       headers:{
@@ -60,7 +61,7 @@ function App() {
   useEffect(() =>{
     async function loadFrontPage(){
 
-      const front_Page_raw_data = await fetch("https://news-p9sh.onrender.com/front_page/headlines");
+      const front_Page_raw_data = await fetch("http://localhost:8000/front_page/headlines");
       const front_page_json_convertion = await front_Page_raw_data.json();
       const front_page_data = front_page_json_convertion.data;
 
@@ -185,10 +186,10 @@ function App() {
 
 
       <div className="container-fluid ">
-        <div className="row justify-content-center">
+        <div className="row justify-content-center align-items-start">
           {dataToRender.map((items , index) => {
             return(
-              <FrontPageNews key={index} title={items.title} img={items.image} author={items.author} description={items.description} url={items.url}/>
+              <FrontPageNews key={index} title={items.title} img={items.image} author={items.author} description={items.description} url={items.url} source={items.source} publishedAt={items.publishedAt}/>
             )
           })}
         </div>

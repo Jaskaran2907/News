@@ -13,7 +13,7 @@ function title(){
             <div className='row align-items-center text-center p-4'>
             
                 <div className='col-xl-3 col-md-4 d-flex justify-content-md-start justify-content-center'>
-                    <p className='text-dark ms-4 p-0 m-0'>{date}</p>
+                    <p className='text-dark ms-4 p-0 m-0 fs-5' style={{fontFamily:"inherit"}}>{date}</p>
                 </div>
 
                 <div className='col-xl-6 col-md-4 d-flex justify-content-center'>

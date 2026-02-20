@@ -6,8 +6,6 @@ env.config();
 const app=express();
 const PORT = process.env.port || 8000;
 
-console.log("Hello")
-
 app.use(cors({
     origin: [
       "http://localhost:5173",
@@ -23,20 +21,27 @@ app.post("/news/fetch", async(req , res)=>{
 
     const result = await fetch(`https://newsapi.org/v2/top-headlines?q=${keyword}&apiKey=${process.env.api_key}`);
     const specific_news_fetch = await result.json();
-    console.log(specific_news_fetch)
     
     const required_specific_data = [];
 
     for(let i=0 ; i<specific_news_fetch.articles.length ; i++){
+
+        const split = specific_news_fetch.articles[i].publishedAt.split("T")[0];
+            const time = new Date(split)
+            const customTime = time.toLocaleDateString("en-Gb",{
+                day:"numeric",
+                month:"short",
+                year:"numeric"
+            })
 
         if(specific_news_fetch.articles[i].urlToImage){
 
             const cleaned_specific_data = {
                 author:specific_news_fetch.articles[i].author,
                 description:specific_news_fetch.articles[i].description,
-                publishedAt:specific_news_fetch.articles[i].publishedAt,
+                publishedAt:customTime,
                 title:specific_news_fetch.articles[i].title,
-                //source:specific_news_fetch.articles[i].source.name,
+                source:specific_news_fetch.articles[i].source.name,
                 image:specific_news_fetch.articles[i].urlToImage,
                 url:specific_news_fetch.articles[i].url
             }
@@ -49,7 +54,6 @@ app.post("/news/fetch", async(req , res)=>{
 
     }
 
-    console.log(required_specific_data);
     res.json({data : required_specific_data});
 });
 
@@ -62,13 +66,21 @@ app.get("/front_page/headlines" , async(req , res)=>{
     for(let i=0 ; i<front_page_fetch_converted.articles.length ; i++){
 
         if(front_page_fetch_converted.articles[i].urlToImage){
+
+            const split = front_page_fetch_converted.articles[i].publishedAt.split("T")[0];
+            const time = new Date(split)
+            const customTime = time.toLocaleDateString("en-Gb",{
+                day:"numeric",
+                month:"short",
+                year:"numeric"
+            })
             
             const cleaned_front_page_data = {
                 author:front_page_fetch_converted.articles[i].author,
                 description:front_page_fetch_converted.articles[i].description,
-                publishedAt:front_page_fetch_converted.articles[i].publishedAt,
+                publishedAt:customTime,
                 title:front_page_fetch_converted.articles[i].title,
-                //source:front_page_fetch_converted.articles[i].source.name,
+                source:front_page_fetch_converted.articles[i].source.name,
                 image:front_page_fetch_converted.articles[i].urlToImage,
                 url:front_page_fetch_converted.articles[i].url
             }

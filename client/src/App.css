@@ -45,6 +45,14 @@ span{
     height:75%;
 }
 
+.articles_component{
+    transition: 0.75s all ease;
+}
+
+.articles_component:hover{
+    transform: translateY(-16px);
+}
+
 @media (max-width: 992px) {
     .auth-btn {
         width:30%;
