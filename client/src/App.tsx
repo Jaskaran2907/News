@@ -1,5 +1,6 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import {countries , languages , categories} from "./component/dropdown"
 import React, { useEffect , useState } from "react";
 import Title from "./component/title";
 import FrontPageNews from "./component/frontPageNews";
@@ -20,15 +21,12 @@ function App() {
   const [keyword , setKeyword] = useState("");
   const [frontPageData , setFrontPageData] = useState<NewsArticle[]>([]);
   const [specificData , setSpecificData] = useState<NewsArticle[]>([]);
-  const [Category , setCategory] = useState<string>("");
+  const [category , setCategory] = useState<string>("");
   const [country , setCountry] = useState<string>("");
   const [language , setLanguage] = useState<string>("");
-
-  useEffect(()=>{
-    console.log(Category);
-    console.log(country);
-    console.log(language);
-  });
+  const [dropdown_country , setDropdown_country]= useState<string>("") ;
+  const [dropdown_category , setDropdown_category]= useState<string>("") ;
+  const [dropdown_language , setDropdown_language]= useState<string>("") ;
 
   const dataToRender = specificData.length>0 ? specificData : frontPageData;
 
@@ -44,18 +42,19 @@ function App() {
   }
 
   async function informationFetch(){
-    const result = await fetch("https://news-p9sh.onrender.com//news/fetch" ,{
+    const result = await fetch("https://news-p9sh.onrender.com/news/fetch" ,{
       method:"POST",
       
       headers:{
         "Content-Type":"application/json"
       },
 
-      body:JSON.stringify({message:keyword } )
+      body:JSON.stringify({message:keyword , category:category , language:language , country:country} )
     });
     
     const specific_data = await result.json();
     setSpecificData(specific_data.data);
+    console.log(specificData);
   }
 
   useEffect(() =>{
@@ -78,98 +77,40 @@ function App() {
       <div className="container my-4">
         <div className="row align-items-stretch">
 
+          {/* Countries dropDown below*/}
+
           <div className="col-md-auto col-4 dropdown d-flex justify-content-end align-items-end">
-            <button className="btn btn-secondary dropdown-toggle btn-dropdown " type="button" data-bs-toggle="dropdown">Country</button>
-            <ul className="dropdown-menu">
-              <li className="dropdown-item" onClick={() => setCountry("ae")}>UAE</li>
-              <li className="dropdown-item" onClick={() => setCountry("ar")}>Argentina</li>
-              <li className="dropdown-item" onClick={() => setCountry("at")}>Austria</li>
-              <li className="dropdown-item" onClick={() => setCountry("au")}>Australia</li>
-              <li className="dropdown-item" onClick={() => setCountry("be")}>Belgium</li>
-              <li className="dropdown-item" onClick={() => setCountry("bg")}>Bulgaria</li>
-              <li className="dropdown-item" onClick={() => setCountry("br")}>Brazil</li>
-              <li className="dropdown-item" onClick={() => setCountry("ca")}>Canada</li>
-              <li className="dropdown-item" onClick={() => setCountry("ch")}>Switzerland</li>
-              <li className="dropdown-item" onClick={() => setCountry("cn")}>China</li>
-              <li className="dropdown-item" onClick={() => setCountry("co")}>Colombia</li>
-              <li className="dropdown-item" onClick={() => setCountry("cu")}>Cuba</li>
-              <li className="dropdown-item" onClick={() => setCountry("cz")}>Czech Republic</li>
-              <li className="dropdown-item" onClick={() => setCountry("de")}>Germany</li>
-              <li className="dropdown-item" onClick={() => setCountry("eg")}>Egypt</li>
-              <li className="dropdown-item" onClick={() => setCountry("fr")}>France</li>
-              <li className="dropdown-item" onClick={() => setCountry("gb")}>United Kingdom</li>
-              <li className="dropdown-item" onClick={() => setCountry("gr")}>Greece</li>
-              <li className="dropdown-item" onClick={() => setCountry("hk")}>Hong Kong</li>
-              <li className="dropdown-item" onClick={() => setCountry("hu")}>Hungary</li>
-              <li className="dropdown-item" onClick={() => setCountry("id")}>Indonesia</li>
-              <li className="dropdown-item" onClick={() => setCountry("ie")}>Ireland</li>
-              <li className="dropdown-item" onClick={() => setCountry("il")}>Israel</li>
-              <li className="dropdown-item" onClick={() => setCountry("in")}>India</li>
-              <li className="dropdown-item" onClick={() => setCountry("it")}>Italy</li>
-              <li className="dropdown-item" onClick={() => setCountry("jp")}>Japan</li>
-              <li className="dropdown-item" onClick={() => setCountry("kr")}>South Korea</li>
-              <li className="dropdown-item" onClick={() => setCountry("lt")}>Lithuania</li>
-              <li className="dropdown-item" onClick={() => setCountry("lv")}>Latvia</li>
-              <li className="dropdown-item" onClick={() => setCountry("ma")}>Morocco</li>
-              <li className="dropdown-item" onClick={() => setCountry("mx")}>Mexico</li>
-              <li className="dropdown-item" onClick={() => setCountry("my")}>Malaysia</li>
-              <li className="dropdown-item" onClick={() => setCountry("ng")}>Nigeria</li>
-              <li className="dropdown-item" onClick={() => setCountry("nl")}>Netherlands</li>
-              <li className="dropdown-item" onClick={() => setCountry("no")}>Norway</li>
-              <li className="dropdown-item" onClick={() => setCountry("nz")}>New Zealand</li>
-              <li className="dropdown-item" onClick={() => setCountry("ph")}>Philippines</li>
-              <li className="dropdown-item" onClick={() => setCountry("pl")}>Poland</li>
-              <li className="dropdown-item" onClick={() => setCountry("pt")}>Portugal</li>
-              <li className="dropdown-item" onClick={() => setCountry("ro")}>Romania</li>
-              <li className="dropdown-item" onClick={() => setCountry("rs")}>Serbia</li>
-              <li className="dropdown-item" onClick={() => setCountry("ru")}>Russia</li>
-              <li className="dropdown-item" onClick={() => setCountry("sa")}>Saudi Arabia</li>
-              <li className="dropdown-item" onClick={() => setCountry("se")}>Sweden</li>
-              <li className="dropdown-item" onClick={() => setCountry("sg")}>Singapore</li>
-              <li className="dropdown-item" onClick={() => setCountry("si")}>Slovenia</li>
-              <li className="dropdown-item" onClick={() => setCountry("sk")}>Slovakia</li>
-              <li className="dropdown-item" onClick={() => setCountry("th")}>Thailand</li>
-              <li className="dropdown-item" onClick={() => setCountry("tr")}>Turkey</li>
-              <li className="dropdown-item" onClick={() => setCountry("tw")}>Taiwan</li>
-              <li className="dropdown-item" onClick={() => setCountry("ua")}>Ukraine</li>
-              <li className="dropdown-item" onClick={() => setCountry("us")}>United States</li>
-              <li className="dropdown-item" onClick={() => setCountry("ve")}>Venezuela</li>
-              <li className="dropdown-item" onClick={() => setCountry("za")}>South Africa</li>
+            <button className="btn btn-secondary dropdown-toggle btn-dropdown text-capitalize" type="button" data-bs-toggle="dropdown">{keyword?"Country":dropdown_country?dropdown_country:"Country"}</button>
+            <ul className="dropdown-menu dropdown-scroll">
+              {countries.map((item)=>(
+                <li key={item.code} className="dropdown-item" onClick={()=>{setCountry(item.code); setDropdown_country(item.name)}}>{item.name}</li>
+              ))}
             </ul>
           </div>
+
+          {/* Categories dropDown below */}
 
           <div className="col-md-auto col-4 dropdown d-flex justify-content-center align-items-end">
-            <button className="btn btn-secondary dropdown-toggle btn-dropdown" type="button" data-bs-toggle="dropdown">Language</button>
-            <ul className="dropdown-menu">
-              <li className="dropdown-item" onClick={() => setLanguage("ar")}>Arabic</li>
-              <li className="dropdown-item" onClick={() => setLanguage("de")}>German</li>
-              <li className="dropdown-item" onClick={() => setLanguage("en")}>English</li>
-              <li className="dropdown-item" onClick={() => setLanguage("es")}>Spanish</li>
-              <li className="dropdown-item" onClick={() => setLanguage("fr")}>French</li>
-              <li className="dropdown-item" onClick={() => setLanguage("he")}>Hebrew</li>
-              <li className="dropdown-item" onClick={() => setLanguage("it")}>Italian</li>
-              <li className="dropdown-item" onClick={() => setLanguage("nl")}>Dutch</li>
-              <li className="dropdown-item" onClick={() => setLanguage("no")}>Norwegian</li>
-              <li className="dropdown-item" onClick={() => setLanguage("pt")}>Portuguese</li>
-              <li className="dropdown-item" onClick={() => setLanguage("ru")}>Russian</li>
-              <li className="dropdown-item" onClick={() => setLanguage("sv")}>Swedish</li>
-              <li className="dropdown-item" onClick={() => setLanguage("ud")}>Urdu</li>
-              <li className="dropdown-item" onClick={() => setLanguage("zh")}>Chinese</li>
+            <button className="btn btn-secondary dropdown-toggle btn-dropdown text-capitalize" type="button" data-bs-toggle="dropdown">{keyword?"Category":dropdown_category?dropdown_category:"Category"}</button>
+            <ul className="dropdown-menu dropdown-scroll ">
+              {categories.map(item => (
+                <li key={item.code} className="dropdown-item" onClick={()=>{ setCategory(item.code); setDropdown_category(item.name)}}>{item.name}</li>
+              ))}
             </ul>
           </div>
 
+          {/* Languages dropDown */}
+
           <div className="col-md-auto col-4 dropdown d-flex justify-content-start align-items-end">
-            <button className="btn btn-secondary dropdown-toggle btn-dropdown" type="button" data-bs-toggle="dropdown">Category</button>
-            <ul className="dropdown-menu">
-              <li className="dropdown-item " onClick={ () => setCategory("business")}>Business</li>
-              <li className="dropdown-item " onClick={ () => setCategory("technology")}>Technology</li>
-              <li className="dropdown-item " onClick={ () => setCategory("entertainment")}>Entertainment</li>
-              <li className="dropdown-item " onClick={ () => setCategory("general")}>General</li>
-              <li className="dropdown-item " onClick={ () => setCategory("health")}>Health</li>
-              <li className="dropdown-item " onClick={ () => setCategory("science")}>Science</li>
-              <li className="dropdown-item " onClick={ () => setCategory("sports")}>Sports</li>
+            <button className="btn btn-secondary dropdown-toggle btn-dropdown text-capitalize" type="button" data-bs-toggle="dropdown">{keyword?"Language":dropdown_language?dropdown_language:"Language"}</button>
+            <ul className="dropdown-menu dropdown-scroll ">
+              {languages.map(item => (
+                <li key={item.code} className="dropdown-item" onClick={()=>{ setLanguage(item.code); setDropdown_language(item.name) }} >{item.name}</li>
+              ))}
             </ul>
           </div>
+
+          {/* User keyword input */}
 
           <div className="col-md col-8 mt-4">
             <input placeholder="Enter a Keyword" className="form-control" onChange={handleChange} onKeyDown={handleKeydown}></input>
@@ -182,8 +123,7 @@ function App() {
       </div>
 
 
-      {/* front page loading */}
-
+      {/* front page loading below*/}
 
       <div className="container-fluid ">
         <div className="row justify-content-center align-items-start">

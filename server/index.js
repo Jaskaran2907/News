@@ -18,9 +18,32 @@ app.use(express.json());
 app.post("/news/fetch", async(req , res)=>{
     const keyword = req.body.message;
     const category = req.body.category;
+    const country = req.body.country;
+    const language = req.body.language;
+    console.log(req.body.category);
+    console.log(req.body.country);
+    console.log(req.body.language);
 
-    const result = await fetch(`https://newsapi.org/v2/top-headlines?q=${keyword}&apiKey=${process.env.api_key}`);
+    let url = "https://newsapi.org/v2/top-headlines?"
+
+    if(keyword){
+        url+=`q=${keyword}&`
+    }else if(country || category){
+        if(country) {url+=`country=${country}&`}
+        if(category){ url+=`category=${category}&`}
+    }
+
+    //if(language){
+    //    url+=`language=${language}&`
+    //}
+
+    url+=`apiKey=${process.env.api_key}`
+
+    console.log(url);
+
+    const result = await fetch(url);
     const specific_news_fetch = await result.json();
+    console.log(specific_news_fetch)
     
     const required_specific_data = [];
 
@@ -32,7 +55,7 @@ app.post("/news/fetch", async(req , res)=>{
                 day:"numeric",
                 month:"short",
                 year:"numeric"
-            })
+            });
 
         if(specific_news_fetch.articles[i].urlToImage){
 
@@ -44,13 +67,13 @@ app.post("/news/fetch", async(req , res)=>{
                 source:specific_news_fetch.articles[i].source.name,
                 image:specific_news_fetch.articles[i].urlToImage,
                 url:specific_news_fetch.articles[i].url
-            }
+            };
     
             required_specific_data.push(cleaned_specific_data);
 
         }else{
             continue
-        }
+        };
 
     }
 
@@ -58,9 +81,10 @@ app.post("/news/fetch", async(req , res)=>{
 });
 
 app.get("/front_page/headlines" , async(req , res)=>{
+
     const frontPageFetch = await fetch(`https://newsapi.org/v2/top-headlines?category=business&apiKey=${process.env.api_key}`);
     const front_page_fetch_converted  = await frontPageFetch.json();
-    console.log(front_page_fetch_converted);
+   
     const required_front_page_data = [];
 
     for(let i=0 ; i<front_page_fetch_converted.articles.length ; i++){
@@ -73,7 +97,7 @@ app.get("/front_page/headlines" , async(req , res)=>{
                 day:"numeric",
                 month:"short",
                 year:"numeric"
-            })
+            });
             
             const cleaned_front_page_data = {
                 author:front_page_fetch_converted.articles[i].author,
@@ -83,13 +107,12 @@ app.get("/front_page/headlines" , async(req , res)=>{
                 source:front_page_fetch_converted.articles[i].source.name,
                 image:front_page_fetch_converted.articles[i].urlToImage,
                 url:front_page_fetch_converted.articles[i].url
-            }
+            };
     
             required_front_page_data.push(cleaned_front_page_data);
         }else{
             continue;
-        }
-
+        };
     }
 
     res.json({data : required_front_page_data});
