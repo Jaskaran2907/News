@@ -75,11 +75,11 @@ function App() {
       <Title />
 
       <div className="container my-4">
-        <div className="row align-items-stretch">
+        <div className="row align-items-stretch justify-content-center">
 
           {/* Countries dropDown below*/}
 
-          <div className="col-md-auto col-4 dropdown d-flex justify-content-end align-items-end">
+          <div className="col-md-auto col-2 ms-2 dropdown d-flex justify-content-end align-items-end">
             <button className="btn btn-secondary dropdown-toggle btn-dropdown text-capitalize" type="button" data-bs-toggle="dropdown">{keyword?"Country":dropdown_country?dropdown_country:"Country"}</button>
             <ul className="dropdown-menu dropdown-scroll">
               {countries.map((item)=>(
@@ -90,7 +90,7 @@ function App() {
 
           {/* Categories dropDown below */}
 
-          <div className="col-md-auto col-4 dropdown d-flex justify-content-center align-items-end">
+          <div className="col-md-auto col-2 ms-2 dropdown d-flex justify-content-center align-items-end">
             <button className="btn btn-secondary dropdown-toggle btn-dropdown text-capitalize" type="button" data-bs-toggle="dropdown">{keyword?"Category":dropdown_category?dropdown_category:"Category"}</button>
             <ul className="dropdown-menu dropdown-scroll ">
               {categories.map(item => (
@@ -101,7 +101,7 @@ function App() {
 
           {/* Languages dropDown */}
 
-          <div className="col-md-auto col-4 dropdown d-flex justify-content-start align-items-end">
+          <div className="col-md-auto col-2 ms-2 dropdown d-flex justify-content-start align-items-end">
             <button className="btn btn-secondary dropdown-toggle btn-dropdown text-capitalize" type="button" data-bs-toggle="dropdown">{keyword?"Language":dropdown_language?dropdown_language:"Language"}</button>
             <ul className="dropdown-menu dropdown-scroll ">
               {languages.map(item => (
