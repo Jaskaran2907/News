@@ -6,6 +6,8 @@ import Title from "./component/title";
 import FrontPageNews from "./component/frontPageNews";
 import './App.css';
 
+// https://news-p9sh.onrender.com
+
 function App() {
 
   interface NewsArticle {
@@ -19,16 +21,24 @@ function App() {
   }
 
   const [keyword , setKeyword] = useState("");
+  const [loading , setLoading] = useState(false);
+
   const [frontPageData , setFrontPageData] = useState<NewsArticle[]>([]);
   const [specificData , setSpecificData] = useState<NewsArticle[]>([]);
+
   const [category , setCategory] = useState<string>("");
   const [country , setCountry] = useState<string>("");
   const [language , setLanguage] = useState<string>("");
+
   const [dropdown_country , setDropdown_country]= useState<string>("") ;
   const [dropdown_category , setDropdown_category]= useState<string>("") ;
   const [dropdown_language , setDropdown_language]= useState<string>("") ;
 
+  const [modal_count , setModalCount] = useState(0);
+  const [front_Page_Load_Count , set_Front_Page_Load_Count] = useState(0);
+
   const dataToRender = specificData.length>0 ? specificData : frontPageData;
+  const modal_count_handler = () => setModalCount(1);
 
   function handleChange(event:React.ChangeEvent<HTMLInputElement>){
     const value = event.target.value;
@@ -42,35 +52,73 @@ function App() {
   }
 
   async function informationFetch(){
-    const result = await fetch("https://news-p9sh.onrender.com/news/fetch" ,{
-      method:"POST",
-      
-      headers:{
-        "Content-Type":"application/json"
-      },
 
-      body:JSON.stringify({message:keyword , category:category , language:language , country:country} )
-    });
-    
-    const specific_data = await result.json();
-    setSpecificData(specific_data.data);
-    console.log(specificData);
+    try{
+      setLoading(true);
+
+      const result = await fetch("https://news-p9sh.onrender.com/news/fetch" ,{
+        method:"POST",
+        
+        headers:{
+          "Content-Type":"application/json"
+        },
+  
+        body:JSON.stringify({message:keyword , category:category , language:language , country:country} )
+      });
+      
+      const specific_data = await result.json();
+      setSpecificData(specific_data.data);
+    }catch(err){
+      console.log("Error occured while fetching the data ", err);
+    }finally{
+      setLoading(false);
+    }
   }
 
   useEffect(() =>{
     async function loadFrontPage(){
 
-      const front_Page_raw_data = await fetch("https://news-p9sh.onrender.com/front_page/headlines");
-      const front_page_json_convertion = await front_Page_raw_data.json();
-      const front_page_data = front_page_json_convertion.data;
+      try{
+        setLoading(true);
+        const front_Page_raw_data = await fetch("https://news-p9sh.onrender.com/front_page/headlines");
+        const front_page_json_convertion = await front_Page_raw_data.json();
+        const front_page_data = front_page_json_convertion.data;
 
       setFrontPageData(front_page_data);
+
+      }catch(err){
+        console.log("Error occured while loading the front page ",)
+      }finally{
+        setLoading(false);
+        set_Front_Page_Load_Count(1);
+      }
     }
-    loadFrontPage()
+    loadFrontPage();
   },[]);
 
   return (
     <div>
+
+      <div className="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex={-1} aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header" style={{background:"#C0C0C0"}}>
+              <h1 className="modal-title fs-5" id="staticBackdropLabel">Search Limitations</h1>
+              <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div className="modal-body" style={{background:"#E2E2E2"}}>
+              <p>
+              Currently, due to limitations of the free API plan, news searches are only supported for the United States. The language must also be set to English; otherwise, results may not appear. You may choose any category when the country is set to the US.
+              </p>
+            </div>
+            <hr className="m-0" style={{background:"#E2E2E2"}}/>
+            <div className="modal-footer" style={{background:"#E2E2E2"}}>
+              <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" className="btn btn-primary" data-bs-dismiss="modal">Understood</button>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <Title />
 
@@ -79,8 +127,8 @@ function App() {
 
           {/* Countries dropDown below*/}
 
-          <div className="col-md-auto col-2 dropdown d-flex justify-content-end align-items-end">
-            <button className="btn btn-secondary dropdown-toggle btn-dropdown text-capitalize" type="button" data-bs-toggle="dropdown">{keyword?"Country":dropdown_country?dropdown_country:"Country"}</button>
+          <div className="col-lg-auto col-4 dropdown d-flex justify-content-center align-items-end">
+            <button className="btn btn-secondary dropdown-toggle btn-dropdown text-capitalize" onClick={modal_count_handler} type="button" data-bs-toggle={modal_count?"dropdown":"modal"} data-bs-target="#staticBackdrop">{keyword?"Country":dropdown_country?dropdown_country:"Country"}</button>
             <ul className="dropdown-menu dropdown-scroll">
               {countries.map((item)=>(
                 <li key={item.code} className="dropdown-item" onClick={()=>{setCountry(item.code); setDropdown_country(item.name)}}>{item.name}</li>
@@ -90,8 +138,8 @@ function App() {
 
           {/* Categories dropDown below */}
 
-          <div className="col-md-auto col-2 ms-3 dropdown d-flex justify-content-center align-items-end">
-            <button className="btn btn-secondary dropdown-toggle btn-dropdown text-capitalize" type="button" data-bs-toggle="dropdown">{keyword?"Category":dropdown_category?dropdown_category:"Category"}</button>
+          <div className="col-lg-auto col-3 dropdown d-flex justify-content-center align-items-end">
+            <button className="btn btn-secondary btn-dropdown dropdown-toggle text-capitalize" type="button" data-bs-toggle="dropdown">{keyword?"Category":dropdown_category?dropdown_category:"Category"}</button>
             <ul className="dropdown-menu dropdown-scroll ">
               {categories.map(item => (
                 <li key={item.code} className="dropdown-item" onClick={()=>{ setCategory(item.code); setDropdown_category(item.name)}}>{item.name}</li>
@@ -101,7 +149,7 @@ function App() {
 
           {/* Languages dropDown */}
 
-          <div className="col-md-auto col-2 ms-3 dropdown d-flex justify-content-start align-items-end">
+          <div className="col-lg-auto col-5 dropdown d-flex justify-content-lg-start justify-content-center align-items-end">
             <button className="btn btn-secondary dropdown-toggle btn-dropdown text-capitalize" type="button" data-bs-toggle="dropdown">{keyword?"Language":dropdown_language?dropdown_language:"Language"}</button>
             <ul className="dropdown-menu dropdown-scroll ">
               {languages.map(item => (
@@ -125,15 +173,24 @@ function App() {
 
       {/* front page loading below*/}
 
-      <div className="container-fluid ">
-        <div className="row justify-content-center align-items-start">
-          {dataToRender.map((items , index) => {
-            return(
-              <FrontPageNews key={index} title={items.title} img={items.image} author={items.author} description={items.description} url={items.url} source={items.source} publishedAt={items.publishedAt}/>
-            )
-          })}
+      {loading &&
+        <div className="d-flex justify-content-center align-items-center mt-4">
+          <div className="spinner-grow " style={{width:"3rem", height:"3rem", color:"#E2E2E2"}}><span className="visually-hidden">Loading...</span></div>
         </div>
-      </div>
+      }
+      
+
+      {!loading &&
+        <div className="container-fluid">
+          <div className="row justify-content-center align-items-start">
+            {dataToRender.map((items , index) => {
+              return(
+                <FrontPageNews key={index} title={items.title} img={items.image} author={items.author} description={items.description} url={items.url} source={items.source} publishedAt={items.publishedAt}/>
+              )
+            })}
+          </div>
+        </div>
+      }
 
     </div>
   )

@@ -20,9 +20,6 @@ app.post("/news/fetch", async(req , res)=>{
     const category = req.body.category;
     const country = req.body.country;
     const language = req.body.language;
-    console.log(req.body.category);
-    console.log(req.body.country);
-    console.log(req.body.language);
 
     let url = "https://newsapi.org/v2/top-headlines?"
 
@@ -33,9 +30,9 @@ app.post("/news/fetch", async(req , res)=>{
         if(category){ url+=`category=${category}&`}
     }
 
-    //if(language){
-    //    url+=`language=${language}&`
-    //}
+    if(language){
+        url+=`language=${language}&`
+    }
 
     url+=`apiKey=${process.env.api_key}`
 
@@ -43,7 +40,6 @@ app.post("/news/fetch", async(req , res)=>{
 
     const result = await fetch(url);
     const specific_news_fetch = await result.json();
-    console.log(specific_news_fetch)
     
     const required_specific_data = [];
 
@@ -77,6 +73,7 @@ app.post("/news/fetch", async(req , res)=>{
 
     }
 
+    console.log(required_specific_data)
     res.json({data : required_specific_data});
 });
 

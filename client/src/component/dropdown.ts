@@ -1,4 +1,5 @@
 export const countries = [
+    { code: "us", name: "United States" },
     { code: "ar", name: "Argentina" },
     { code: "at", name: "Austria" },
     { code: "au", name: "Australia" },
@@ -49,7 +50,6 @@ export const countries = [
     { code: "tr", name: "Turkey" },
     { code: "tw", name: "Taiwan" },
     { code: "ua", name: "Ukraine" },
-    { code: "us", name: "United States" },
     { code: "ve", name: "Venezuela" },
     { code: "za", name: "South Africa" }
 ];
@@ -65,9 +65,9 @@ export const categories = [
 ];
 
 export const languages = [
+    { code: "en", name: "English" },
     { code: "ar", name: "Arabic" },
     { code: "de", name: "German" },
-    { code: "en", name: "English" },
     { code: "es", name: "Spanish" },
     { code: "fr", name: "French" },
     { code: "he", name: "Hebrew" },

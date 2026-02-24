@@ -46,7 +46,7 @@ span{
 }
 
 .articles_component{
-    transition: 0.3s all ease;
+    transition: 1s all ease;
 }
 
 .articles_component:hover{
@@ -77,13 +77,11 @@ span{
         width:90px;
     }
 
-}
-
-@media (max-width:768px){
     .btn-dropdown{
         height:100%;
         margin-left: 8%;
     }
+
 }
   
 @media (max-width: 576px) {
@@ -92,6 +90,11 @@ span{
     padding: 5px 10px;
     font-size: 12px;
   }
+
+  .btn-dropdown{
+    height:100%;
+    font-size: 12px;
+}
 
 }
 
