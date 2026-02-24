@@ -20,6 +20,8 @@ function App() {
     publishedAt:string;
   }
 
+  console.log("Hello")
+
   const [keyword , setKeyword] = useState("");
   const [loading , setLoading] = useState(false);
 
