@@ -8,6 +8,7 @@ function title(){
         year:"numeric"
     });
 
+
     return(
         <div className='container-fluid title-bar'>
             <div className='row align-items-center text-center p-4'>

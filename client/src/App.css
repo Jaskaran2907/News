@@ -46,11 +46,11 @@ span{
 }
 
 .articles_component{
-    transition: 1s all ease;
+    transition: 0.5s all ease;
 }
 
 .articles_component:hover{
-    transform: translateY(-10px);
+    transform: translateY(-8px);
 }
 
 .dropdown-scroll{

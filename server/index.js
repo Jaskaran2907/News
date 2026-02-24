@@ -72,14 +72,13 @@ app.post("/news/fetch", async(req , res)=>{
         };
 
     }
-
     console.log(required_specific_data)
     res.json({data : required_specific_data});
 });
 
 app.get("/front_page/headlines" , async(req , res)=>{
 
-    const frontPageFetch = await fetch(`https://newsapi.org/v2/top-headlines?category=business&apiKey=${process.env.api_key}`);
+    const frontPageFetch = await fetch(`https://newsapi.org/v2/top-headlines?country=us&apiKey=${process.env.api_key}`);
     const front_page_fetch_converted  = await frontPageFetch.json();
    
     const required_front_page_data = [];
