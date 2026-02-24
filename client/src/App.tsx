@@ -20,8 +20,6 @@ function App() {
     publishedAt:string;
   }
 
-  console.log("Hello")
-
   const [keyword , setKeyword] = useState("");
   const [loading , setLoading] = useState(false);
 
@@ -38,6 +36,7 @@ function App() {
 
   const [modal_count , setModalCount] = useState(0);
   const [front_Page_Load_Count , set_Front_Page_Load_Count] = useState(0);
+  console.log(front_Page_Load_Count)
 
   const dataToRender = specificData.length>0 ? specificData : frontPageData;
   const modal_count_handler = () => setModalCount(1);
