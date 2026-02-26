@@ -1,10 +1,22 @@
 import express from "express";
 import cors from "cors";
 import env from "dotenv";
+import pg from "pg";
+import bcrypt from "bcrypt";
 
 env.config();
 const app=express();
-const PORT = process.env.port || 8000;
+const PORT = 8000 //process.env.port || 8000;
+
+const db = new pg.Client({
+    user:process.env.user,
+    host:process.env.host,
+    database:process.env.database,
+    password:process.env.password,
+    port:process.env.port
+});
+
+db.connect();
 
 app.use(cors({
     origin: [
@@ -114,6 +126,36 @@ app.get("/front_page/headlines" , async(req , res)=>{
     res.json({data : required_front_page_data});
 
 })
+
+app.post("/signUp", async(req,res)=>{
+    const username = req.body.username;
+    const password = req.body.password;
+    try{
+        const check_user = await db.query("select * from Auth where email = $1",[username])
+        if(check_user.rows.length>0){
+            console.log("user exist");
+            res.json({status:"User Already Exists"})
+        }else{
+            try{
+                const hash = await bcrypt.hash(password,12);
+                console.log(hash);
+
+                const new_user = await db.query("insert into Auth values($1,$2) RETURNING *",[username , hash]);
+                res.json({status:"Sign Up Successfull"})
+            }catch(err){
+                console.log("Error while pushing new user in DB " , err);
+            }
+            
+        }
+    }catch(err){
+        console.log("Error" , err)
+    }
+
+    res.json({message:"received"})
+});
+
+
+
 app.listen(PORT, ()=>{
     console.log(`Server running on port 8000`);
 });

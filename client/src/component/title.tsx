@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 function title(){
 
     const today = new Date();
@@ -18,12 +20,12 @@ function title(){
                 </div>
 
                 <div className='col-xl-6 col-md-4 d-flex justify-content-center'>
-                    <h4 className='text-dark fs-1 '>The Public Brief</h4>
+                    <Link to="/" className='text-dark fs-1 text-decoration-none'>The Public Brief</Link>
                 </div>
 
                 <div className='col-xl-3 col-md-4 d-flex justify-content-md-end justify-content-center gap-1 mt-1 mt-md-0'>
-                    <button className='btn btn-primary auth-btn'>Login</button>
-                    <button className='btn btn-secondary auth-btn'>Sign Up</button>
+                    <Link to="/login" className="btn btn-primary auth-btn">Login</Link>
+                    <Link to="/signup" className="btn btn-secondary auth-btn">Sign Up</Link>
                 </div>
 
             </div>
