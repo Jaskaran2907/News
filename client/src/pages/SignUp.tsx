@@ -46,9 +46,9 @@ export default function SignUp(){
 
                         <form onSubmit={handleSubmit}>
                             <input className="form-control mt-3 w-75 mx-auto" placeholder="Enter Your Email" type="email" onChange={handleEmail} value={email} required></input>
-                            <input className="form-control mt-2 w-75 mx-auto" placeholder="Enter Your Password" type="password" onChange={handlePassword} value={password} required minLength={8}></input>
+                            <input className="form-control mt-2 w-75 mx-auto" placeholder="Set Your Password" type="password" onChange={handlePassword} value={password} minLength={8} pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@#$%^&*]).{8,}$" title="Password must contain at least 8 characters, including uppercase, lowercase, number, and special character (@#$%^&*)" required></input>
 
-                            <button className="btn btn-primary my-2 w-100 my-3" type="submit">Enter</button>
+                            <button className="btn btn-primary my-2 w-100 my-4" type="submit">Enter</button>
                         </form>
                     </div>
                 </div>

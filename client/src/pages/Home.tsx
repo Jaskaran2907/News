@@ -1,11 +1,7 @@
 import {countries , languages , categories} from "../component/dropdown"
 import React, { useEffect , useState } from "react";
-
 import E404 from "../component/e404";
-
-
 import Buffering from "../component/buffering";
-
 import FrontPageNews from "../component/frontPageNews";
 
 

@@ -6,7 +6,7 @@ import bcrypt from "bcrypt";
 
 env.config();
 const app=express();
-const PORT = 8000 //process.env.port || 8000;
+const PORT = 8000 
 
 const db = new pg.Client({
     user:process.env.user,
@@ -154,7 +154,28 @@ app.post("/signUp", async(req,res)=>{
     res.json({message:"received"})
 });
 
+app.post("/login",async(req ,res)=>{
+    const username = req.body.username;
+    const password = req.body.password;
 
+    try{
+        const check_user = await db.query("select password from Auth where email = $1",[username])
+        const hashed_pass = check_user.rows[0].password;
+        if(check_user.rows.length>0){
+            const compare_Pass = await bcrypt.compare(password,hashed_pass);
+
+            if(compare_Pass){
+                res.json({status:"Password verified"});
+            }else{
+                res.json({status:"Wrong password"});
+            }
+        }else{
+            res.json({status:"User Does'nt Exist"});
+        }
+    }catch(err){
+        console.log("Error While logging in , ",err);
+    };
+});
 
 app.listen(PORT, ()=>{
     console.log(`Server running on port 8000`);
