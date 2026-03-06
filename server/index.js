@@ -130,6 +130,8 @@ app.get("/front_page/headlines" , async(req , res)=>{
 app.post("/signUp", async(req,res)=>{
     const username = req.body.username;
     const password = req.body.password;
+    console.log(req.body.otp);
+    
     try{
         const check_user = await db.query("select * from Auth where email = $1",[username])
         if(check_user.rows.length>0){
@@ -141,7 +143,7 @@ app.post("/signUp", async(req,res)=>{
                 console.log(hash);
 
                 const new_user = await db.query("insert into Auth values($1,$2) RETURNING *",[username , hash]);
-                res.json({status:"Sign Up Successfull"})
+                res.json({status:"Successfully Authenticated"})
             }catch(err){
                 console.log("Error while pushing new user in DB " , err);
             }
@@ -150,8 +152,6 @@ app.post("/signUp", async(req,res)=>{
     }catch(err){
         console.log("Error" , err)
     }
-
-    res.json({message:"received"})
 });
 
 app.post("/login",async(req ,res)=>{
@@ -165,7 +165,7 @@ app.post("/login",async(req ,res)=>{
             const compare_Pass = await bcrypt.compare(password,hashed_pass);
 
             if(compare_Pass){
-                res.json({status:"Password verified"});
+                res.json({status:"Successfully Authenticated"});
             }else{
                 res.json({status:"Wrong password"});
             }

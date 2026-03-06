@@ -1,10 +1,12 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 export default function Login(){
 
     const [email , setEmail] = useState<string>("");
     const [password , setPassword] = useState<string>("");
-
+    const [authStatus, setAuthStatus] = useState<string | null>(null);
+    
     function handleEmail(event:React.ChangeEvent<HTMLInputElement>){
         setEmail(event.target.value);
     }
@@ -29,29 +31,43 @@ export default function Login(){
             });
 
             const result = await response.json();
-            console.log(result);
+            result.status=="Successfully Authenticated"?setAuthStatus(result.status):null;
         }catch(err){
             console.log("Error occured while sending login request " , err);
         }
     }
 
     return(
-        <div>
-            <div className="container my-5">
-                <div className="row justify-content-center">
-                    <div className="col-xl-6 col-lg-8 col-md-10 col-11 border rounded-4 text-center px-4">
-                        <h1 className="mt-2">Login</h1>
-                        <hr className="w-50 mx-auto"/>
+        <>
+            {!authStatus ? (
+                    <div className="container mt-5 pt-3">
+                        <div className="row justify-content-center">
+                            <div className="col-xl-6 col-lg-8 col-md-10 col-11 border rounded-4 text-center px-4">
+                            <h1 className="mt-2">Login</h1>
+                            <hr className="w-50 mx-auto"/>
 
-                        <form onSubmit={handleSubmit}>
-                            <input className="form-control mt-3 w-75 mx-auto" placeholder="Enter Your Email" type="email" onChange={handleEmail}></input>
-                            <input className="form-control mt-2 w-75 mx-auto" placeholder="Enter Your Password" type="password" onChange={handlePassword}></input>
-                            <button className="btn btn-primary my-2 w-100 my-3" type="submit">Enter</button>
-                        </form>
-
+                            <form onSubmit={handleSubmit}>
+                                    <input className="form-control mt-3 w-75 mx-auto" placeholder="Enter Your Email" type="email" onChange={handleEmail} value={email} required></input>
+                                    <input className="form-control mt-2 w-75 mx-auto" placeholder="Set Your Password" type="password" onChange={handlePassword} value={password} minLength={8} pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@#$%^&*]).{8,}$" title="Password must contain at least 8 characters, including uppercase, lowercase, number, and special character (@#$%^&*)" required></input>
+                                    
+                                    <button className="btn btn-primary w-100 my-4" type="submit">Enter</button>
+                                </form>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
-        </div>
+                ) : (
+                    <div className="container mt-5 pt-3">
+                        <div className="row justify-content-center">
+                            <div className="col-xl-6 col-lg-8 col-md-10 col-11 border rounded-4 text-center px-4">
+                                <h1 className="mt-2 text-success" >Login Successfull</h1>
+                                <hr className="w-50 mx-auto"/>
+
+                                <Link className="btn btn-primary w-100 my-4" to="/customised">Load Customised Page</Link>
+                            </div>
+                        </div> 
+                    </div>
+                )
+            } 
+        </>
     );
 };
