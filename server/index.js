@@ -1,182 +1,293 @@
 import express from "express";
 import cors from "cors";
-import env from "dotenv";
+import dotenv from "dotenv";
 import pg from "pg";
 import bcrypt from "bcrypt";
+import nodemailer from "nodemailer";
 
-env.config();
-const app=express();
-const PORT = 8000 
+dotenv.config();
+
+const app = express();
+const PORT = 8000;
+
+app.use(express.json());
+
+app.use(cors({
+  origin:[
+    "http://localhost:5173",
+    "https://news-zeta-blush.vercel.app"
+  ],
+  methods:["GET","POST"]
+}));
 
 const db = new pg.Client({
-    user:process.env.user,
-    host:process.env.host,
-    database:process.env.database,
-    password:process.env.password,
-    port:process.env.port
+  user:process.env.DB_USER,
+  host:process.env.DB_HOST,
+  database:process.env.DB_NAME,
+  password:process.env.DB_PASSWORD,
+  port:process.env.DB_PORT
 });
 
 db.connect();
 
-app.use(cors({
-    origin: [
-      "http://localhost:5173",
-      "https://news-zeta-blush.vercel.app"
-    ],
-    methods: ["GET", "POST"]
-}));
-app.use(express.json());
+const transporter = nodemailer.createTransport({
+  service:"gmail",
+  auth:{
+    user:process.env.EMAIL_USER,
+    pass:process.env.EMAIL_PASS
+  }
+});
 
-app.post("/news/fetch", async(req , res)=>{
-    const keyword = req.body.message;
-    const category = req.body.category;
-    const country = req.body.country;
-    const language = req.body.language;
 
-    let url = "https://newsapi.org/v2/top-headlines?"
+const otpStore = {};
 
-    if(keyword){
-        url+=`q=${keyword}&`
-    }else if(country || category){
-        if(country) {url+=`country=${country}&`}
-        if(category){ url+=`category=${category}&`}
-    }
+async function sendOtp(email,otp){
 
-    if(language){
-        url+=`language=${language}&`
-    }
+  const mailOptions = {
+    from:process.env.EMAIL_USER,
+    to:email,
+    subject:"Your OTP For The Public Brief",
+    text:`Your OTP is ${otp}. It will expire in 5 minutes`
+  };
 
-    url+=`apiKey=${process.env.api_key}`
+  await transporter.sendMail(mailOptions);
 
-    console.log(url);
+}
+
+
+app.post("/news/fetch",async(req,res)=>{
+
+  const keyword = req.body.message;
+  const category = req.body.category;
+  const country = req.body.country;
+  const language = req.body.language;
+
+  let url = "https://newsapi.org/v2/top-headlines?";
+
+  if(keyword){
+    url += `q=${keyword}&`;
+  }
+  else if(country || category){
+
+    if(country) url += `country=${country}&`;
+    if(category) url += `category=${category}&`;
+
+  }
+
+  if(language){
+    url += `language=${language}&`;
+  }
+
+  url += `apiKey=${process.env.API_KEY}`;
+
+  try{
 
     const result = await fetch(url);
-    const specific_news_fetch = await result.json();
-    
-    const required_specific_data = [];
+    const data = await result.json();
 
-    for(let i=0 ; i<specific_news_fetch.articles.length ; i++){
+    const requiredData = [];
 
-        const split = specific_news_fetch.articles[i].publishedAt.split("T")[0];
-            const time = new Date(split)
-            const customTime = time.toLocaleDateString("en-Gb",{
-                day:"numeric",
-                month:"short",
-                year:"numeric"
-            });
+    for(let i=0;i<data.articles.length;i++){
 
-        if(specific_news_fetch.articles[i].urlToImage){
+      if(!data.articles[i].urlToImage) continue;
 
-            const cleaned_specific_data = {
-                author:specific_news_fetch.articles[i].author,
-                description:specific_news_fetch.articles[i].description,
-                publishedAt:customTime,
-                title:specific_news_fetch.articles[i].title,
-                source:specific_news_fetch.articles[i].source.name,
-                image:specific_news_fetch.articles[i].urlToImage,
-                url:specific_news_fetch.articles[i].url
-            };
-    
-            required_specific_data.push(cleaned_specific_data);
+      const split = data.articles[i].publishedAt.split("T")[0];
+      const time = new Date(split);
 
-        }else{
-            continue
-        };
+      const customTime = time.toLocaleDateString("en-GB",{
+        day:"numeric",
+        month:"short",
+        year:"numeric"
+      });
+
+      requiredData.push({
+        author:data.articles[i].author,
+        description:data.articles[i].description,
+        publishedAt:customTime,
+        title:data.articles[i].title,
+        source:data.articles[i].source.name,
+        image:data.articles[i].urlToImage,
+        url:data.articles[i].url
+      });
 
     }
-    console.log(required_specific_data)
-    res.json({data : required_specific_data});
+
+    res.json({data:requiredData});
+
+  }catch(err){
+
+    console.log(err);
+    res.status(500).json({error:"News fetch failed"});
+
+  }
+
 });
 
-app.get("/front_page/headlines" , async(req , res)=>{
 
-    const frontPageFetch = await fetch(`https://newsapi.org/v2/top-headlines?country=us&apiKey=${process.env.api_key}`);
-    const front_page_fetch_converted  = await frontPageFetch.json();
-   
-    const required_front_page_data = [];
+app.get("/front_page/headlines",async(req,res)=>{
 
-    for(let i=0 ; i<front_page_fetch_converted.articles.length ; i++){
+  try{
 
-        if(front_page_fetch_converted.articles[i].urlToImage){
+    const frontPageFetch = await fetch(
+      `https://newsapi.org/v2/top-headlines?country=us&apiKey=${process.env.API_KEY}`
+    );
 
-            const split = front_page_fetch_converted.articles[i].publishedAt.split("T")[0];
-            const time = new Date(split)
-            const customTime = time.toLocaleDateString("en-Gb",{
-                day:"numeric",
-                month:"short",
-                year:"numeric"
-            });
-            
-            const cleaned_front_page_data = {
-                author:front_page_fetch_converted.articles[i].author,
-                description:front_page_fetch_converted.articles[i].description,
-                publishedAt:customTime,
-                title:front_page_fetch_converted.articles[i].title,
-                source:front_page_fetch_converted.articles[i].source.name,
-                image:front_page_fetch_converted.articles[i].urlToImage,
-                url:front_page_fetch_converted.articles[i].url
-            };
-    
-            required_front_page_data.push(cleaned_front_page_data);
-        }else{
-            continue;
-        };
+    const data = await frontPageFetch.json();
+
+    const requiredData = [];
+
+    for(let i=0;i<data.articles.length;i++){
+
+      if(!data.articles[i].urlToImage) continue;
+
+      const split = data.articles[i].publishedAt.split("T")[0];
+      const time = new Date(split);
+
+      const customTime = time.toLocaleDateString("en-GB",{
+        day:"numeric",
+        month:"short",
+        year:"numeric"
+      });
+
+      requiredData.push({
+        author:data.articles[i].author,
+        description:data.articles[i].description,
+        publishedAt:customTime,
+        title:data.articles[i].title,
+        source:data.articles[i].source.name,
+        image:data.articles[i].urlToImage,
+        url:data.articles[i].url
+      });
+
     }
 
-    res.json({data : required_front_page_data});
+    res.json({data:requiredData});
 
-})
+  }catch(err){
 
-app.post("/signUp", async(req,res)=>{
-    const username = req.body.username;
-    const password = req.body.password;
-    console.log(req.body.otp);
-    
-    try{
-        const check_user = await db.query("select * from Auth where email = $1",[username])
-        if(check_user.rows.length>0){
-            console.log("user exist");
-            res.json({status:"User Already Exists"})
-        }else{
-            try{
-                const hash = await bcrypt.hash(password,12);
-                console.log(hash);
+    console.log(err);
+    res.status(500).json({error:"Front page fetch failed"});
 
-                const new_user = await db.query("insert into Auth values($1,$2) RETURNING *",[username , hash]);
-                res.json({status:"Successfully Authenticated"})
-            }catch(err){
-                console.log("Error while pushing new user in DB " , err);
-            }
-            
-        }
-    }catch(err){
-        console.log("Error" , err)
-    }
+  }
+
 });
 
-app.post("/login",async(req ,res)=>{
-    const username = req.body.username;
-    const password = req.body.password;
+app.post("/request-otp",async(req,res)=>{
 
-    try{
-        const check_user = await db.query("select password from Auth where email = $1",[username])
-        const hashed_pass = check_user.rows[0].password;
-        if(check_user.rows.length>0){
-            const compare_Pass = await bcrypt.compare(password,hashed_pass);
+  const {email,password} = req.body;
 
-            if(compare_Pass){
-                res.json({status:"Successfully Authenticated"});
-            }else{
-                res.json({status:"Wrong password"});
-            }
-        }else{
-            res.json({status:"User Does'nt Exist"});
-        }
-    }catch(err){
-        console.log("Error While logging in , ",err);
+  try{
+
+    const checkUser = await db.query(
+      "SELECT * FROM Auth WHERE email=$1",
+      [email]
+    );
+
+    if(checkUser.rows.length>0){
+      return res.json({status:"User Already Exists"});
+    }
+
+    const otp = Math.floor((Math.random()*9000)+1000);
+
+    const hash = await bcrypt.hash(password,12);
+
+    otpStore[email] = {
+      otp,
+      password:hash,
+      expires:Date.now()+300000
     };
+
+    await sendOtp(email,otp);
+
+    res.json({status:"OTP Sent"});
+
+  }catch(err){
+
+    console.log(err);
+    res.status(500).json({status:"Server Error"});
+
+  }
+
 });
 
-app.listen(PORT, ()=>{
-    console.log(`Server running on port 8000`);
+
+app.post("/verify-otp",async(req,res)=>{
+
+  const {email,otp} = req.body;
+
+  const stored = otpStore[email];
+
+  if(!stored){
+    return res.json({status:"OTP Not Requested"});
+  }
+
+  if(Date.now()>stored.expires){
+
+    delete otpStore[email];
+    return res.json({status:"OTP Expired"});
+
+  }
+
+  if(parseInt(otp)!==stored.otp){
+    return res.json({status:"Invalid OTP"});
+  }
+
+  try{
+
+    await db.query(
+      "INSERT INTO Auth VALUES($1,$2)",
+      [email,stored.password]
+    );
+
+    delete otpStore[email];
+
+    res.json({status:"Successfully Authenticated"});
+
+  }catch(err){
+
+    console.log(err);
+    res.status(500).json({status:"Server Error"});
+
+  }
+
+});
+
+
+app.post("/login",async(req,res)=>{
+
+  const {username,password} = req.body;
+
+  try{
+
+    const checkUser = await db.query(
+      "SELECT password FROM Auth WHERE email=$1",
+      [username]
+    );
+
+    if(checkUser.rows.length===0){
+      return res.json({status:"User Doesn't Exist"});
+    }
+
+    const match = await bcrypt.compare(
+      password,
+      checkUser.rows[0].password
+    );
+
+    if(match){
+      res.json({status:"Successfully Authenticated"});
+    }
+    else{
+      res.json({status:"Wrong Password"});
+    }
+
+  }catch(err){
+
+    console.log(err);
+
+  }
+
+});
+
+app.listen(PORT,()=>{
+  console.log(`Server running on port ${PORT}`);
 });
