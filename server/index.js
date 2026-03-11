@@ -21,11 +21,10 @@ app.use(cors({
 }));
 
 const db = new pg.Client({
-  user:process.env.DB_USER,
-  host:process.env.DB_HOST,
-  database:process.env.DB_NAME,
-  password:process.env.DB_PASSWORD,
-  port:process.env.DB_PORT
+  connectionString:process.env.externalDB,
+  ssl: {
+    rejectUnauthorized: false
+  }
 });
 
 db.connect();
@@ -172,6 +171,8 @@ app.get("/front_page/headlines",async(req,res)=>{
 
 });
 
+let current_user = '';
+
 app.post("/request-otp",async(req,res)=>{
 
   const {email,password} = req.body;
@@ -241,6 +242,7 @@ app.post("/verify-otp",async(req,res)=>{
 
     delete otpStore[email];
 
+    current_user = email;
     res.json({status:"Successfully Authenticated"});
 
   }catch(err){
@@ -274,6 +276,7 @@ app.post("/login",async(req,res)=>{
     );
 
     if(match){
+      current_user = username;
       res.json({status:"Successfully Authenticated"});
     }
     else{
@@ -287,6 +290,61 @@ app.post("/login",async(req,res)=>{
   }
 
 });
+
+let keywords = [];
+
+app.post("/custom/fetch" , async(req , res)=>{
+  const keyword = req.body.message;
+
+  if (keywords.length<4){
+    keywords.push(keyword);
+  }else{
+    keywords.shift()
+    keywords.push(keyword)
+  }
+
+  try{
+    const result = await db.query("update Auth set searches = $1 where email = $2 RETURNING *",[keywords.join(" AND ") , current_user]);
+    let searches = result.rows[0].searches;
+
+    //console.log(`https://newsapi.org/v2/everything?q=${searches}&apiKey=${process.env.API_KEY}`);
+    const customPage = await fetch(`https://newsapi.org/v2/everything?q=${searches}&apiKey=${process.env.API_KEY}`)
+
+    const data = await customPage.json();
+
+    const requiredData = [];
+
+    for(let i=0;i<data.articles.length;i++){
+
+      if(!data.articles[i].urlToImage) continue;
+
+      const split = data.articles[i].publishedAt.split("T")[0];
+      const time = new Date(split);
+
+      const customTime = time.toLocaleDateString("en-GB",{
+        day:"numeric",
+        month:"short",
+        year:"numeric"
+      });
+
+      requiredData.push({
+        author:data.articles[i].author,
+        description:data.articles[i].description,
+        publishedAt:customTime,
+        title:data.articles[i].title,
+        source:data.articles[i].source.name,
+        image:data.articles[i].urlToImage,
+        url:data.articles[i].url
+      });
+
+    }
+
+    res.json({data:requiredData});
+
+  }catch(err){
+    console.log("Custom page Error " , err);
+  }
+})
 
 app.listen(PORT,()=>{
   console.log(`Server running on port ${PORT}`);

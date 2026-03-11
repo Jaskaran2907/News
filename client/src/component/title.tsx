@@ -10,6 +10,7 @@ function title(){
         year:"numeric"
     });
 
+    const loadAuth = true;
 
     return(
         <div className='container-fluid title-bar'>
@@ -23,10 +24,11 @@ function title(){
                     <Link to="/" className='text-dark fs-1 text-decoration-none'>The Public Brief</Link>
                 </div>
 
-                <div className='col-xl-3 col-md-4 d-flex justify-content-md-end justify-content-center gap-1 mt-1 mt-md-0'>
-                    <Link to="/login" className="btn btn-primary auth-btn">Login</Link>
-                    <Link to="/signup" className="btn btn-secondary auth-btn">Sign Up</Link>
-                </div>
+                {loadAuth && <div className='col-xl-3 col-md-4 d-flex justify-content-md-end justify-content-center gap-1 mt-1 mt-md-0'>
+                        <Link to="/login" className="btn btn-primary auth-btn">Login</Link>
+                        <Link to="/signup" className="btn btn-secondary auth-btn">Sign Up</Link>
+                    </div>
+                }
 
             </div>
         </div>

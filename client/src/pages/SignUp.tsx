@@ -12,19 +12,14 @@ export default function SignUp(){
     const [otpStatus , setOtpStatus] = useState<string | null>(null);
     const [authStatus , setAuthStatus] = useState<string | null>(null);
 
-    /* ---------------- EMAIL INPUT ---------------- */
-
     function handleEmail(event:React.ChangeEvent<HTMLInputElement>){
         setEmail(event.target.value);
     }
-
-    /* ---------------- PASSWORD INPUT ---------------- */
 
     function handlePassword(event:React.ChangeEvent<HTMLInputElement>){
         setPassword(event.target.value);
     }
 
-    /* ---------------- REQUEST OTP ---------------- */
 
     async function handleOtp(e:any){
 
@@ -33,7 +28,7 @@ export default function SignUp(){
         try{
 
             const response = await fetch(
-                "http://localhost:8000/request-otp",
+                "https://news-p9sh.onrender.com/request-otp",
                 {
                     method:"POST",
                     headers:{
@@ -60,20 +55,18 @@ export default function SignUp(){
 
     }
 
-    /* ---------------- USER OTP INPUT ---------------- */
 
     function handleUserOtp(event:React.ChangeEvent<HTMLInputElement>){
         setUserOtp(event.target.value);
     }
 
-    /* ---------------- VERIFY OTP ---------------- */
 
     async function handleOtpSubmit(){
 
         try{
 
             const response = await fetch(
-                "http://localhost:8000/verify-otp",
+                "https://news-p9sh.onrender.com/verify-otp",
                 {
                     method:"POST",
                     headers:{
@@ -100,7 +93,6 @@ export default function SignUp(){
 
     }
 
-    /* ---------------- RENDER ---------------- */
 
     return(
         <>
@@ -110,15 +102,21 @@ export default function SignUp(){
 
                     <div className="container mt-5 pt-3">
                         <div className="row justify-content-center">
-                            <div className="col-xl-6 col-lg-8 col-md-10 col-11 border rounded-4 text-center px-4">
+                            <div key="signup-card" className="col-xl-6 col-lg-8 col-md-10 col-11 border rounded-4 text-center px-5 py-4 signup-card shadow-lg bg-white">
 
-                                <h1 className="mt-2">Sign Up</h1>
-                                <hr className="w-50 mx-auto"/>
+                                <h1 className="mt-2 fw-semibold text-primary">
+                                    Sign Up
+                                </h1>
+                                <p className="text-muted small">
+                                    Create your account to continue
+                                </p>
+
+                                <hr className="w-50 mx-auto opacity-50"/>
 
                                 <form onSubmit={handleOtp}>
 
                                     <input
-                                        className="form-control mt-3 w-75 mx-auto"
+                                        className="form-control mt-4 w-75 mx-auto  form-control-md"
                                         placeholder="Enter Your Email"
                                         type="email"
                                         onChange={handleEmail}
@@ -127,7 +125,7 @@ export default function SignUp(){
                                     />
 
                                     <input
-                                        className="form-control mt-2 w-75 mx-auto"
+                                        className="form-control mt-3 w-75 mx-auto form-control-md"
                                         placeholder="Set Your Password"
                                         type="password"
                                         onChange={handlePassword}
@@ -138,17 +136,17 @@ export default function SignUp(){
                                         required
                                     />
 
-                                    <p className="my-2">
-                                        Click Enter to Send Otp via Email
+                                    <p className="my-3 text-muted small">
+                                        Click Enter to receive OTP via email
                                     </p>
 
-                                    <hr className="my-3"/>
+                                    <hr className="my-3 opacity-50"/>
 
                                     <button
-                                        className="btn btn-primary w-100 my-4"
+                                        className="btn btn-primary w-100 my-3 btn-lg"
                                         type="submit"
                                     >
-                                        Enter
+                                        Send OTP
                                     </button>
 
                                 </form>
@@ -161,36 +159,42 @@ export default function SignUp(){
 
                     <div className="container mt-5 pt-3">
                         <div className="row justify-content-center">
-                            <div className="col-xl-6 col-lg-8 col-md-10 col-11 border rounded-4 text-center px-4">
+                            <div key="otp-card" className="col-xl-6 col-lg-8 col-md-10 col-11 border rounded-4 text-center px-5 py-4 signup-card shadow-lg bg-white">
 
-                                <h1 className="mt-2">Sign Up</h1>
-                                <hr className="w-50 mx-auto"/>
+                                <h1 className="mt-2 fw-bold text-primary">
+                                    Sign Up
+                                </h1>
+                                <hr className="w-50 mx-auto opacity-50"/>
 
-                                <h4 className="mt-2 text-dark">
-                                    Enter Otp
+                                <h4 className="mt-3 text-secondary fw-semibold">
+                                    Enter OTP
                                 </h4>
 
-                                <div className="d-flex align-items-center my-2">
+                                <p className="text-muted small">
+                                    Check your email for the verification code
+                                </p>
+
+                                <div className="d-flex align-items-center justify-content-center my-3">
 
                                     <input
-                                        className="form-control mt-3 my-1 w-75"
-                                        placeholder="Enter Otp Sent via Email"
+                                        className="form-control mt-2 my-1 w-75 form-control-md"
+                                        placeholder="Enter OTP Sent via Email"
                                         onChange={handleUserOtp}
                                     />
 
                                     <button
-                                        className="btn btn-primary mx-3"
+                                        className="btn btn-primary mx-3 px-4 fw-semibold"
                                         onClick={handleOtpSubmit}
                                     >
-                                        Enter
+                                        Verify
                                     </button>
 
                                 </div>
 
-                                <div className="d-flex mx-2 my-3">
+                                <div className="d-flex justify-content-center mx-2 my-2">
                                     {otpStatus &&
-                                        <p className="p-0 m-0 text-danger">
-                                            Invalid Otp
+                                        <p className="p-0 m-0 text-danger small fw-semibold">
+                                            Invalid OTP
                                         </p>
                                     }
                                 </div>
@@ -205,16 +209,20 @@ export default function SignUp(){
 
                 <div className="container mt-5 pt-3">
                     <div className="row justify-content-center">
-                        <div className="col-xl-6 col-lg-8 col-md-10 col-11 border rounded-4 text-center px-4">
+                        <div key="success" className="col-xl-6 col-lg-8 col-md-10 col-11 border rounded-4 text-center px-5 py-4 signup-card shadow-lg bg-white">
 
-                            <h1 className="mt-2 text-success">
+                            <h1 className="mt-2 text-success fw-bold">
                                 Sign Up Successful
                             </h1>
 
-                            <hr className="w-50 mx-auto"/>
+                            <p className="text-muted small">
+                                Your account has been created successfully
+                            </p>
+
+                            <hr className="w-50 mx-auto opacity-50"/>
 
                             <Link
-                                className="btn btn-primary w-100 my-4"
+                                className="btn btn-primary w-100 my-4 btn-lg fw-semibold"
                                 to="/customised"
                             >
                                 Load Customised Page

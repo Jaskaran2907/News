@@ -45,14 +45,6 @@ span{
     height:75%;
 }
 
-.articles_component{
-    transition: 0.5s all ease;
-}
-
-.articles_component:hover{
-    transform: translateY(-8px);
-}
-
 .dropdown-scroll{
     max-height: 300px;
     overflow-y: auto;
@@ -94,7 +86,9 @@ span{
   .btn-dropdown{
     height:100%;
     font-size: 12px;
+    
 }
+
 
 }
 
@@ -109,5 +103,55 @@ span{
 
     50%{
         background: #C0C5CA;
+    }
+}
+
+.signup-card{
+    background:white;
+    box-shadow:0 15px 40px rgba(0,0,0,0.15);
+    animation:fadeSlide 0.75s ease;
+}
+
+@keyframes fadeSlide{
+    from{
+        opacity:0;
+        transform:translateY(20px) scale(.95);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0) scale(1);
+    }
+}
+
+.form-control{
+    transition:all 0.3s ease;
+}
+
+.form-control:focus{
+    transform:scale(1.02);
+    box-shadow:0 0 10px rgba(0,123,255,0.5);
+}
+
+.btn-primary{
+    transition:all 0.3s ease;
+}
+
+.btn-primary:hover{
+    transform:translateY(-2px);
+    box-shadow:0 8px 20px rgba(0,0,0,0.2);
+}
+
+.articles_component{
+    animation:slide 1.5s ease;
+}
+
+@keyframes slide {
+    from{
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to{
+        opacity: 1;
+        transform: translateY(0);
     }
 }
