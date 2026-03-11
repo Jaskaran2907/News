@@ -12,13 +12,7 @@ const PORT = 8000;
 
 app.use(express.json());
 
-app.use(cors({
-  origin:[
-    "http://localhost:5173",
-    "https://news-zeta-blush.vercel.app"
-  ],
-  methods:["GET","POST"]
-}));
+app.use(cors());
 
 const db = new pg.Client({
   connectionString:process.env.externalDB,
