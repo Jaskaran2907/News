@@ -175,40 +175,36 @@ let current_user = '';
 
 app.post("/request-otp",async(req,res)=>{
 
-  const {email,password} = req.body;
-
   try{
+
+    const {email,password} = req.body;
+    console.log("OTP request received:",email);
 
     const checkUser = await db.query(
       "SELECT * FROM Auth WHERE email=$1",
       [email]
     );
 
-    if(checkUser.rows.length>0){
-      return res.json({status:"User Already Exists"});
-    }
+    console.log("User check passed");
 
     const otp = Math.floor((Math.random()*9000)+1000);
 
     const hash = await bcrypt.hash(password,12);
 
-    otpStore[email] = {
-      otp,
-      password:hash,
-      expires:Date.now()+300000
-    };
+    otpStore[email] = { otp, password:hash, expires:Date.now()+300000 };
+
+    console.log("Sending email...");
 
     await sendOtp(email,otp);
+
+    console.log("Email sent");
 
     res.json({status:"OTP Sent"});
 
   }catch(err){
-
-    console.log(err);
+    console.log("OTP ERROR:",err);
     res.status(500).json({status:"Server Error"});
-
   }
-
 });
 
 
@@ -286,7 +282,7 @@ app.post("/login",async(req,res)=>{
   }catch(err){
 
     console.log(err);
-
+    res.status(500).json({status:"Server Error"});
   }
 
 });
