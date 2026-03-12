@@ -28,7 +28,7 @@ export default function SignUp(){
         try{
 
             const response = await fetch(
-                "http://localhost:8000/request-otp",
+                "https://news-p9sh.onrender.com/request-otp",
                 {
                     method:"POST",
                     headers:{
@@ -66,7 +66,7 @@ export default function SignUp(){
         try{
 
             const response = await fetch(
-                "http://localhost:8000/verify-otp",
+                "https://news-p9sh.onrender.com/verify-otp",
                 {
                     method:"POST",
                     headers:{
