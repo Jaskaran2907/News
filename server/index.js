@@ -36,17 +36,20 @@ const transporter = nodemailer.createTransport({
 
 const otpStore = {};
 
-async function sendOtp(email,otp){
+async function sendOtp(email, otp) {
+  try {
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: "Your OTP For The Public Brief",
+      text: `Your OTP is ${otp}. It will expire in 5 minutes`
+    };
 
-  const mailOptions = {
-    from:process.env.EMAIL_USER,
-    to:email,
-    subject:"Your OTP For The Public Brief",
-    text:`Your OTP is ${otp}. It will expire in 5 minutes`
-  };
-
-  await transporter.sendMail(mailOptions);
-
+    await transporter.sendMail(mailOptions);
+  } catch (err) {
+    console.log("EMAIL ERROR:", err);
+    throw err;
+  }
 }
 
 
