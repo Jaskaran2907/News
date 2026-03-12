@@ -52,7 +52,7 @@ export default function Home(){
         try{
           setLoading(true);
     
-          const result = await fetch("https://news-p9sh.onrender.com/news/fetch" ,{
+          const result = await fetch("http://localhost:8000/news/fetch" ,{
             method:"POST",
             
             headers:{
@@ -76,7 +76,7 @@ export default function Home(){
     
           try{
             setLoading(true);
-            const front_Page_raw_data = await fetch("https://news-p9sh.onrender.com/front_page/headlines");
+            const front_Page_raw_data = await fetch("http://localhost:8000/front_page/headlines");
             const front_page_json_convertion = await front_Page_raw_data.json();
             const front_page_data = front_page_json_convertion.data;
     

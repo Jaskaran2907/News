@@ -22,7 +22,7 @@ export default function Login(){
 
     const sendAuthReq = async() => {
         try{
-            const response = await fetch("https://news-p9sh.onrender.com/login" , {
+            const response = await fetch("http://localhost:8000/login" , {
                 method:"POST",
                 headers:{
                     "Content-Type":"application/json",

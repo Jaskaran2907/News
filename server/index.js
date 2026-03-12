@@ -8,7 +8,7 @@ import nodemailer from "nodemailer";
 dotenv.config();
 
 const app = express();
-const PORT = 8000;
+const PORT = process.env.PORT || 8000;
 
 app.use(express.json());
 
@@ -24,7 +24,9 @@ const db = new pg.Client({
 db.connect();
 
 const transporter = nodemailer.createTransport({
-  service:"gmail",
+  host: "smtp.gmail.com",
+  port: 465,
+  secure: true,
   auth:{
     user:process.env.EMAIL_USER,
     pass:process.env.EMAIL_PASS
