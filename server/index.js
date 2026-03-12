@@ -15,7 +15,7 @@ app.use(express.json());
 app.use(cors());
 
 const db = new pg.Client({
-  connectionString:process.env.externalDB,
+  connectionString:process.env.DATABASE_URL,
   ssl: {
     rejectUnauthorized: false
   }
